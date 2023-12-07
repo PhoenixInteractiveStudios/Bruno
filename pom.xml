@@ -62,6 +62,16 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <!-- Write version into resource file -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>version.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 
