@@ -1,6 +1,6 @@
 package org.burrow_studios.bruno;
 
-import java.util.Properties;
+import org.burrow_studios.bruno.util.ResourceUtil;
 
 public class Main {
     static {
@@ -9,7 +9,7 @@ public class Main {
 
     public static Bruno singleton;
     /** Static application version. */
-    public static final String VERSION = retrieveVersion();
+    public static final String VERSION = ResourceUtil.getVersion();
 
     /** JVM entrypoint. */
     public static void main(String[] args) throws Exception {
@@ -21,22 +21,5 @@ public class Main {
         System.out.printf(" version %s...%n", VERSION);
 
         singleton = new Bruno();
-    }
-
-    /**
-     * Attempts to read the application version from the {@code version.properties} resource.
-     * @return Application version.
-     */
-    @SuppressWarnings("CallToPrintStackTrace")
-    private static String retrieveVersion() {
-        try {
-            Properties properties = new Properties();
-            properties.load(Main.class.getResourceAsStream("version.properties"));
-            return properties.getProperty("version");
-        } catch (Exception e) {
-            System.out.println("\nCould not load version from resources.");
-            e.printStackTrace();
-            return null;
-        }
     }
 }
