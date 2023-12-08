@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Bruno {
     /** Directory iun which the JAR ist located. */
@@ -55,5 +56,12 @@ public class Bruno {
         jda = jdaBuilder.build();
 
         jdaBuilder.setToken(null);
+
+
+        // Shut down on user input
+        Scanner scanner = new Scanner(System.in);
+        scanner.hasNextLine();
+
+        jda.shutdown();
     }
 }
