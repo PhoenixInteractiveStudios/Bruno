@@ -3,6 +3,7 @@ package org.burrow_studios.bruno;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.burrow_studios.bruno.util.ResourceUtil;
 
 import java.io.File;
@@ -29,7 +30,11 @@ public class Bruno {
     private JDA jda;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException {
-        jdaBuilder= JDABuilder.createDefault(null);
+        jdaBuilder= JDABuilder.create(
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+        );
     }
 
     void run() throws IOException {
@@ -48,5 +53,7 @@ public class Bruno {
         jdaBuilder.setToken(config.getProperty("token"));
 
         jda = jdaBuilder.build();
+
+        jdaBuilder.setToken(null);
     }
 }
