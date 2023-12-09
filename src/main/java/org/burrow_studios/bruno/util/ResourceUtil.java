@@ -13,7 +13,7 @@ public class ResourceUtil {
 
     public static @Nullable String getProperty(@NotNull String filename, @NotNull String key) throws IOException {
         Properties properties = new Properties();
-        properties.load(Main.class.getResourceAsStream(filename + ".properties"));
+        properties.load(getResource(filename + ".properties"));
         return properties.getProperty(key);
     }
 
@@ -40,7 +40,7 @@ public class ResourceUtil {
         file.createNewFile();
 
         try(
-                InputStream   inStream = Main.class.getResourceAsStream(resource);
+                InputStream   inStream = getResource(resource);
                 OutputStream outStream = new FileOutputStream(file)
         ) {
             if (inStream == null)
@@ -52,5 +52,9 @@ public class ResourceUtil {
                 outStream.write(buffer, 0, readBytes);
             }
         }
+    }
+
+    private static @Nullable InputStream getResource(@NotNull String name) {
+        return Main.class.getResourceAsStream("/" + name);
     }
 }
