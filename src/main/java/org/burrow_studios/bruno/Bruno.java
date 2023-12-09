@@ -1,5 +1,7 @@
 package org.burrow_studios.bruno;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
@@ -30,6 +32,8 @@ public class Bruno {
     private final JDABuilder jdaBuilder;
     private JDA jda;
 
+    private JsonObject idCache;
+
     Bruno() throws InvalidTokenException, IllegalArgumentException {
         jdaBuilder= JDABuilder.create(
                 GatewayIntent.GUILD_MESSAGES,
@@ -50,6 +54,13 @@ public class Bruno {
         Properties config = new Properties();
         config.load(new FileReader(new File(DIR, "config.properties")));
 
+        // Create idcache
+        Gson gson = new Gson();
+        ResourceUtil.createDefault("idcache.json");
+        File idcacheFile = new File(DIR, "idcache.json");
+        idCache = gson.fromJson(new FileReader(idcacheFile), JsonObject.class);
+
+
         // Set bot token
         jdaBuilder.setToken(config.getProperty("token"));
 
@@ -63,5 +74,9 @@ public class Bruno {
         scanner.hasNextLine();
 
         jda.shutdown();
+    }
+
+    public JsonObject getIdCache() {
+        return idCache;
     }
 }
