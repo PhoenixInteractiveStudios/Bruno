@@ -55,6 +55,6 @@ public class ResourceUtil {
     }
 
     private static @Nullable InputStream getResource(@NotNull String name) {
-        return Main.class.getResourceAsStream("/" + name);
+        return Main.class.getClassLoader().getResourceAsStream(name);
     }
 }

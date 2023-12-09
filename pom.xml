@@ -62,9 +62,19 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <!-- Export resources -->
         <resources>
             <resource>
-                <!-- Write version into resource file -->
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>config.properties</include>
+                    <include>idcache.json</include>
+                </includes>
+            </resource>
+
+            <!-- Write version into resource file -->
+            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
