@@ -31,10 +31,10 @@ public class LogUtil {
     }
 
     public static @NotNull FileHandler getFileHandler(@NotNull Formatter formatter) throws IOException {
-        String datePrefix = new SimpleDateFormat("yyyy-MM-dd'T'").format(Date.from(Instant.now()));
+        String datePrefix = new SimpleDateFormat("yyyy-MM-dd").format(Date.from(Instant.now()));
 
         // retrieve all existing log files from today
-        File[] files = getLogDir().listFiles((dir, name) -> name.matches("^\\d\\d\\d\\d-\\d\\d-\\d\\dT_\\d+\\.log$") && name.startsWith(datePrefix));
+        File[] files = getLogDir().listFiles((dir, name) -> name.matches("^\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d+\\.log$") && name.startsWith(datePrefix));
         if (files == null)
             throw new NotDirectoryException(getLogDir().getName());
 
