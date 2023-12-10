@@ -33,14 +33,14 @@ public class Bruno extends Thread {
         DIR = f;
     }
 
-    private final Logger logger = Logger.getLogger("Bruno");
+    private static final Logger LOG = Logger.getLogger("Bruno");
 
     private final JDA jda;
     private final Properties config;
     private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
-        logger.log(Level.INFO, "Creating missing default files.");
+        LOG.log(Level.INFO, "Creating missing default files.");
         ResourceUtil.createDefault("config.properties");
 
         // Import config
@@ -50,13 +50,13 @@ public class Bruno extends Thread {
         try {
             this.forumId = Long.parseLong(config.getProperty("channel"));
         } catch (NumberFormatException e) {
-            this.logger.log(Level.SEVERE, "Invalid channel id. Please check your config!");
+            LOG.log(Level.SEVERE, "Invalid channel id. Please check your config!");
             throw e;
         }
-        logger.log(Level.INFO, "Forum channel id is " + forumId);
+        LOG.log(Level.INFO, "Forum channel id is " + forumId);
 
         // Instantiate JDA
-        logger.log(Level.INFO, "Building JDA.");
+        LOG.log(Level.INFO, "Building JDA.");
         String token = config.getProperty("token");
         this.jda= JDABuilder.create(token,
                     GatewayIntent.GUILD_MESSAGES,
@@ -71,39 +71,39 @@ public class Bruno extends Thread {
 
     @Override
     public void run() {
-        logger.log(Level.INFO, "Awaiting JDA.");
+        LOG.log(Level.INFO, "Awaiting JDA.");
 
         try {
             jda.awaitReady();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Interrupted while waiting for JDA.", e);
+            LOG.log(Level.SEVERE, "Interrupted while waiting for JDA.", e);
             jda.shutdown();
             return;
         }
 
         ForumChannel forum = jda.getForumChannelById(forumId);
         if (forum == null) {
-            logger.log(Level.SEVERE, "Forum does not exist");
+            LOG.log(Level.SEVERE, "Forum does not exist");
             return;
         }
 
-        logger.log(Level.INFO, "Upserting tags.");
+        LOG.log(Level.INFO, "Upserting tags.");
         TagHelper.upsertTags(forum);
-        logger.log(Level.INFO, "Checking existing channels.");
+        LOG.log(Level.INFO, "Checking existing channels.");
         for (ThreadChannel channel : forum.getThreadChannels())
             TagHelper.checkTags(channel);
 
-        logger.log(Level.INFO, "OK!");
+        LOG.log(Level.INFO, "OK!");
 
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
         scanner.hasNextLine();
 
-        logger.log(Level.INFO, "Shutting down...");
+        LOG.log(Level.INFO, "Shutting down...");
 
         jda.shutdown();
 
-        logger.log(Level.INFO, "OK bye");
+        LOG.log(Level.INFO, "OK bye");
     }
 
     public long getForumId() {
