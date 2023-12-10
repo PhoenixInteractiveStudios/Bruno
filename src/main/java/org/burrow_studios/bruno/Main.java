@@ -1,6 +1,7 @@
 package org.burrow_studios.bruno;
 
 import org.burrow_studios.bruno.util.ResourceUtil;
+import org.burrow_studios.bruno.util.logging.LogUtil;
 
 public class Main {
     static {
@@ -19,6 +20,8 @@ public class Main {
         if (VERSION == null)
             throw new AssertionError("Unknown version");
         System.out.printf(" version %s...%n", VERSION);
+
+        LogUtil.init();
 
         singleton = new Bruno();
         singleton.start();

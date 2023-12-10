@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.burrow_studios.bruno.listeners.ForumListener;
 import org.burrow_studios.bruno.tags.TagHelper;
 import org.burrow_studios.bruno.util.ResourceUtil;
-import org.burrow_studios.bruno.util.logging.LogUtil;
-import org.burrow_studios.bruno.util.logging.SimpleFormatter;
 
 import java.io.File;
 import java.io.FileReader;
@@ -20,7 +18,6 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 public class Bruno extends Thread {
     /** Directory iun which the JAR ist located. */
@@ -43,10 +40,6 @@ public class Bruno extends Thread {
     private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
-        logger.setUseParentHandlers(false);
-        logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
-        logger.addHandler(LogUtil.getFileHandler(new SimpleFormatter()));
-
         logger.log(Level.INFO, "Creating missing default files.");
         ResourceUtil.createDefault("config.properties");
 

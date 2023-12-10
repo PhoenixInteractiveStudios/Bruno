@@ -9,11 +9,26 @@ import java.nio.file.NotDirectoryException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
+import java.util.logging.*;
 
 public class LogUtil {
     private LogUtil() { }
+
+    public static void init() throws IOException {
+        SimpleFormatter formatter = new SimpleFormatter();
+
+        Logger rootLogger = Logger.getLogger("");
+
+        for (Handler handler : rootLogger.getHandlers())
+            if (handler instanceof ConsoleHandler)
+                handler.setFormatter(formatter);
+
+        try {
+            rootLogger.addHandler(getFileHandler(formatter));
+        } catch (IOException e) {
+            throw new IOException("Could not create logging file handler", e);
+        }
+    }
 
     public static @NotNull FileHandler getFileHandler(@NotNull Formatter formatter) throws IOException {
         String datePrefix = new SimpleDateFormat("yyyy-MM-dd'T'").format(Date.from(Instant.now()));
