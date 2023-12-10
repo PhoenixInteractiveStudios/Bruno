@@ -57,6 +57,13 @@ public class Bruno extends Thread {
 
     @Override
     public void run() {
+        try {
+            jda.awaitReady();
+        } catch (InterruptedException e) {
+            jda.shutdown();
+            throw new RuntimeException(e);
+        }
+
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
         scanner.hasNextLine();
