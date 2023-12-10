@@ -21,6 +21,6 @@ public class Main {
         System.out.printf(" version %s...%n", VERSION);
 
         singleton = new Bruno();
-        singleton.run();
+        singleton.start();
     }
 }

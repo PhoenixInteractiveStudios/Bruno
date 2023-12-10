@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class Bruno {
+public class Bruno extends Thread {
     /** Directory iun which the JAR ist located. */
     public static final File DIR;
     static {
@@ -29,46 +29,36 @@ public class Bruno {
         DIR = f;
     }
 
-    private final JDABuilder jdaBuilder;
-    private JDA jda;
+    private final JDA jda;
+    private final Properties config;
+    private final JsonObject idCache;
 
-    private JsonObject idCache;
-
-    Bruno() throws InvalidTokenException, IllegalArgumentException {
-        jdaBuilder= JDABuilder.create(
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.GUILD_EMOJIS_AND_STICKERS
-        );
-    }
-
-    void run() throws IOException {
-        // Shutdown
-        if (jda != null && !jda.getStatus().equals(JDA.Status.SHUTDOWN))
-            jda.shutdown();
-
+    Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
         // Write default config
         ResourceUtil.createDefault("config.properties");
 
         // Import config
-        Properties config = new Properties();
-        config.load(new FileReader(new File(DIR, "config.properties")));
+        this.config = new Properties();
+        this.config.load(new FileReader(new File(DIR, "config.properties")));
 
         // Create idcache
         Gson gson = new Gson();
         ResourceUtil.createDefault("idcache.json");
         File idcacheFile = new File(DIR, "idcache.json");
-        idCache = gson.fromJson(new FileReader(idcacheFile), JsonObject.class);
+        this.idCache = gson.fromJson(new FileReader(idcacheFile), JsonObject.class);
 
+        // Instantiate JDA
+        this.jda= JDABuilder.create(
+                    GatewayIntent.GUILD_MESSAGES,
+                    GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                    GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+                )
+                .setToken(config.getProperty("token"))
+                .build();
+    }
 
-        // Set bot token
-        jdaBuilder.setToken(config.getProperty("token"));
-
-        jda = jdaBuilder.build();
-
-        jdaBuilder.setToken(null);
-
-
+    @Override
+    public void run() {
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
         scanner.hasNextLine();
