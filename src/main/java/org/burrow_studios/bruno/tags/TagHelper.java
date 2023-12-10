@@ -114,4 +114,24 @@ public class TagHelper {
         // apply changes
         thread.getManager().setAppliedTags(newTags).queue();
     }
+
+    public static void removePriorities(ThreadChannel thread) {
+        List<ForumTag> oldTags = thread.getAppliedTags();
+        List<ForumTag> newTags = new ArrayList<>();
+
+        priorities:
+        for (ForumTag tag : oldTags) {
+            for (Priority priority : Priority.values()) {
+                if (!tag.getName().equals(priority.getFullName())) continue;
+
+                continue priorities;
+            }
+
+            newTags.add(tag);
+        }
+
+        if (newTags.size() == oldTags.size()) return;
+
+        thread.getManager().setAppliedTags(newTags).queue();
+    }
 }
