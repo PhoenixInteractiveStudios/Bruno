@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 public class Bruno extends Thread {
     /** Directory iun which the JAR ist located. */
@@ -42,6 +43,8 @@ public class Bruno extends Thread {
     private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
+        logger.setUseParentHandlers(false);
+        logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
         logger.addHandler(LogUtil.getFileHandler(new SimpleFormatter()));
 
         logger.log(Level.INFO, "Creating missing default files.");
@@ -51,7 +54,12 @@ public class Bruno extends Thread {
         this.config = new Properties();
         this.config.load(new FileReader(new File(DIR, "config.properties")));
 
-        this.forumId = Long.parseLong(config.getProperty("channel"));
+        try {
+            this.forumId = Long.parseLong(config.getProperty("channel"));
+        } catch (NumberFormatException e) {
+            this.logger.log(Level.SEVERE, "Invalid channel id. Please check your config!");
+            throw e;
+        }
         logger.log(Level.INFO, "Forum channel id is " + forumId);
 
         // Instantiate JDA
