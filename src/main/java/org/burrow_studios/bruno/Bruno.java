@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.burrow_studios.bruno.listeners.ForumListener;
 import org.burrow_studios.bruno.util.ResourceUtil;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public class Bruno extends Thread {
     private final JDA jda;
     private final Properties config;
     private final JsonObject idCache;
+    private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
         // Write default config
@@ -41,6 +43,8 @@ public class Bruno extends Thread {
         this.config = new Properties();
         this.config.load(new FileReader(new File(DIR, "config.properties")));
 
+        this.forumId = Long.parseLong(config.getProperty("channel"));
+
         // Create idcache
         Gson gson = new Gson();
         ResourceUtil.createDefault("idcache.json");
@@ -48,12 +52,15 @@ public class Bruno extends Thread {
         this.idCache = gson.fromJson(new FileReader(idcacheFile), JsonObject.class);
 
         // Instantiate JDA
-        this.jda= JDABuilder.create(
+        String token = config.getProperty("token");
+        this.jda= JDABuilder.create(token,
                     GatewayIntent.GUILD_MESSAGES,
                     GatewayIntent.GUILD_MESSAGE_REACTIONS,
                     GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
-                .setToken(config.getProperty("token"))
+                .addEventListeners(
+                        new ForumListener(this)
+                )
                 .build();
     }
 
@@ -68,5 +75,9 @@ public class Bruno extends Thread {
 
     public JsonObject getIdCache() {
         return idCache;
+    }
+
+    public long getForumId() {
+        return this.forumId;
     }
 }
