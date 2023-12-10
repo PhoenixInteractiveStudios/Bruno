@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.burrow_studios.bruno.listeners.ForumListener;
 import org.burrow_studios.bruno.tags.TagHelper;
 import org.burrow_studios.bruno.util.ResourceUtil;
+import org.burrow_studios.bruno.util.logging.LogUtil;
+import org.burrow_studios.bruno.util.logging.SimpleFormatter;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +18,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Bruno extends Thread {
     /** Directory iun which the JAR ist located. */
@@ -31,12 +35,16 @@ public class Bruno extends Thread {
         DIR = f;
     }
 
+    private final Logger logger = Logger.getLogger("Bruno");
+
     private final JDA jda;
     private final Properties config;
     private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
-        // Write default config
+        logger.addHandler(LogUtil.getFileHandler(new SimpleFormatter()));
+
+        logger.log(Level.INFO, "Creating missing default files.");
         ResourceUtil.createDefault("config.properties");
 
         // Import config
@@ -44,8 +52,10 @@ public class Bruno extends Thread {
         this.config.load(new FileReader(new File(DIR, "config.properties")));
 
         this.forumId = Long.parseLong(config.getProperty("channel"));
+        logger.log(Level.INFO, "Forum channel id is " + forumId);
 
         // Instantiate JDA
+        logger.log(Level.INFO, "Building JDA.");
         String token = config.getProperty("token");
         this.jda= JDABuilder.create(token,
                     GatewayIntent.GUILD_MESSAGES,
@@ -60,26 +70,39 @@ public class Bruno extends Thread {
 
     @Override
     public void run() {
+        logger.log(Level.INFO, "Awaiting JDA.");
+
         try {
             jda.awaitReady();
         } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Interrupted while waiting for JDA.", e);
             jda.shutdown();
-            throw new RuntimeException(e);
+            return;
         }
 
         ForumChannel forum = jda.getForumChannelById(forumId);
-        if (forum == null)
-            throw new IllegalArgumentException("Forum does not exist");
+        if (forum == null) {
+            logger.log(Level.SEVERE, "Forum does not exist");
+            return;
+        }
 
+        logger.log(Level.INFO, "Upserting tags.");
         TagHelper.upsertTags(forum);
+        logger.log(Level.INFO, "Checking existing channels.");
         for (ThreadChannel channel : forum.getThreadChannels())
             TagHelper.checkTags(channel);
+
+        logger.log(Level.INFO, "OK!");
 
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
         scanner.hasNextLine();
 
+        logger.log(Level.INFO, "Shutting down...");
+
         jda.shutdown();
+
+        logger.log(Level.INFO, "OK bye");
     }
 
     public long getForumId() {
