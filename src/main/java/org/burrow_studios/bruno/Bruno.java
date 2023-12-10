@@ -1,7 +1,5 @@
 package org.burrow_studios.bruno;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
@@ -32,7 +30,6 @@ public class Bruno extends Thread {
 
     private final JDA jda;
     private final Properties config;
-    private final JsonObject idCache;
     private final long forumId;
 
     Bruno() throws InvalidTokenException, IllegalArgumentException, IOException {
@@ -44,12 +41,6 @@ public class Bruno extends Thread {
         this.config.load(new FileReader(new File(DIR, "config.properties")));
 
         this.forumId = Long.parseLong(config.getProperty("channel"));
-
-        // Create idcache
-        Gson gson = new Gson();
-        ResourceUtil.createDefault("idcache.json");
-        File idcacheFile = new File(DIR, "idcache.json");
-        this.idCache = gson.fromJson(new FileReader(idcacheFile), JsonObject.class);
 
         // Instantiate JDA
         String token = config.getProperty("token");
@@ -71,10 +62,6 @@ public class Bruno extends Thread {
         scanner.hasNextLine();
 
         jda.shutdown();
-    }
-
-    public JsonObject getIdCache() {
-        return idCache;
     }
 
     public long getForumId() {
