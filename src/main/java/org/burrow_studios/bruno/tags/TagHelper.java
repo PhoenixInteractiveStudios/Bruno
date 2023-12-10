@@ -101,14 +101,16 @@ public class TagHelper {
         if (issuePriority == null)
             issuePriority = Priority.NORMAL;
 
-        /*
-         * If the required priority tag does not exist the bot will ignore priority. All tags SHOULD exist at this point
-         * since calling upsertTags() would ensure that but in case that fails this would also fail, so we'll ignore it.
-         */
-        for (ForumTag availableTag : availableTags) {
-            if (availableTag.getName().equals(issuePriority.getFullName())) continue;
+        if (!thread.isArchived()) {
+            /*
+             * If the required priority tag does not exist the bot will ignore priority. All tags SHOULD exist at this point
+             * since calling upsertTags() would ensure that but in case that fails this would also fail, so we'll ignore it.
+             */
+            for (ForumTag availableTag : availableTags) {
+                if (availableTag.getName().equals(issuePriority.getFullName())) continue;
 
-            newTags.add(availableTag);
+                newTags.add(availableTag);
+            }
         }
 
         // apply changes
