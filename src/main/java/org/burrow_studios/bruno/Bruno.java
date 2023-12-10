@@ -2,9 +2,12 @@ package org.burrow_studios.bruno;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.burrow_studios.bruno.listeners.ForumListener;
+import org.burrow_studios.bruno.tags.TagHelper;
 import org.burrow_studios.bruno.util.ResourceUtil;
 
 import java.io.File;
@@ -63,6 +66,14 @@ public class Bruno extends Thread {
             jda.shutdown();
             throw new RuntimeException(e);
         }
+
+        ForumChannel forum = jda.getForumChannelById(forumId);
+        if (forum == null)
+            throw new IllegalArgumentException("Forum does not exist");
+
+        TagHelper.upsertTags(forum);
+        for (ThreadChannel channel : forum.getThreadChannels())
+            TagHelper.checkTags(channel);
 
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
