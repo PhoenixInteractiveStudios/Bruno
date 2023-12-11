@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Bruno extends Thread {
-    /** Directory iun which the JAR ist located. */
+    /** Directory in which the JAR ist located. */
     public static final File DIR;
     static {
         File f;
