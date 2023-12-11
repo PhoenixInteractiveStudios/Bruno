@@ -1,6 +1,7 @@
 package org.burrow_studios.bruno.listeners;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
@@ -47,7 +48,12 @@ public class ForumListener extends ListenerAdapter {
         // No checks required since ChannelUpdateLockedEvents are limited to thread channels inside forum channels
         ThreadChannel channel = event.getChannel().asThreadChannel();
 
-        if (!isLocked)
-            TagHelper.checkTags(channel);
+        if (isLocked) return;
+
+        ForumChannel forum = channel.getParentChannel().asForumChannel();
+        if (forum.getIdLong() != bruno.getForumId()) return;
+
+        TagHelper.checkTags(channel);
+        channel.sendMessage("Issue re-opened").queue();
     }
 }
