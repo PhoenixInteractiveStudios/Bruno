@@ -1,11 +1,11 @@
 package org.burrow_studios.bruno.tags;
 
 public enum Priority {
-    LOWEST(":purple_circle:", "Lowest"),
-    LOW(":blue_circle:", "Low"),
-    NORMAL(":yellow_circle:", "Normal"),
-    HIGH(":orange_circle:", "High"),
-    HIGHEST(":red_circle:", "Highest");
+    LOWEST("\uD83D\uDFE3", "Lowest"),
+    LOW("\uD83D\uDD35", "Low"),
+    NORMAL("\uD83D\uDFE1", "Normal"),
+    HIGH("\uD83D\uDFE0", "High"),
+    HIGHEST("\uD83D\uDD34", "Highest");
 
     private final String emote;
     private final String name;

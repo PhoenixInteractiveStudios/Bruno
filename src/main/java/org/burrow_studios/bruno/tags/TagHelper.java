@@ -82,14 +82,27 @@ public class TagHelper {
             newTags.add(oldTag);
         }
 
+        boolean addedTagsContainPriority = false;
+
         tags:
         for (ForumTag addedTag : addedTags) {
             for (Priority priority : Priority.values()) {
                 if (!addedTag.getName().equals(priority.getFullName())) continue;
 
                 // overwrite currently cached priority if this one is higher
-                if (issuePriority == null || issuePriority.ordinal() < priority.ordinal())
+                if (issuePriority == null) {
                     issuePriority = priority;
+                    addedTagsContainPriority = true;
+                } else if (!addedTagsContainPriority || issuePriority.ordinal() < priority.ordinal()) {
+                    /*
+                     * This part is reached if one of the following is true:
+                     * - The added tags did not contain another priority tag before this one, in which case the old
+                     *   priority should be overwritten.
+                     * - The added tags did contain another priority tag before this one (2 were added at the same time)
+                     *   but this one is higher and should therefore take precedence.
+                     */
+                    issuePriority = priority;
+                }
 
                 // don't add priority tags yet to ensure only one priority will be used later
                 continue tags;
@@ -107,9 +120,10 @@ public class TagHelper {
              * since calling upsertTags() would ensure that but in case that fails this would also fail, so we'll ignore it.
              */
             for (ForumTag availableTag : availableTags) {
-                if (availableTag.getName().equals(issuePriority.getFullName())) continue;
+                if (!availableTag.getName().equals(issuePriority.getFullName())) continue;
 
                 newTags.add(availableTag);
+                break;
             }
         }
 
