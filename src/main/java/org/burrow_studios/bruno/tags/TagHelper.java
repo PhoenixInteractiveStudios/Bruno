@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.channel.forums.BaseForumTag;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTagData;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.managers.channel.concrete.ThreadChannelManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class TagHelper {
         thread.getManager().setAppliedTags(newTags).queue();
     }
 
-    public static void removePriorities(ThreadChannel thread) {
+    public static ThreadChannelManager removePriorities(ThreadChannel thread) {
         List<ForumTag> oldTags = thread.getAppliedTags();
         List<ForumTag> newTags = new ArrayList<>();
 
@@ -146,8 +147,8 @@ public class TagHelper {
             newTags.add(tag);
         }
 
-        if (newTags.size() == oldTags.size()) return;
+        if (newTags.size() == oldTags.size()) return thread.getManager();
 
-        thread.getManager().setAppliedTags(newTags).queue();
+        return thread.getManager().setAppliedTags(newTags);
     }
 }

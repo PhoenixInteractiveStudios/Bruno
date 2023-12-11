@@ -96,7 +96,7 @@ public class Bruno extends Thread {
             TagHelper.checkTags(channel);
 
         LOG.log(Level.INFO, "Upserting commands.");
-        jda.upsertCommand("close", "Closes an issue").queue();
+        jda.upsertCommand(CommandListener.COMMAND_CLOSE, "Closes an issue").queue();
 
         LOG.log(Level.INFO, "OK!");
 
