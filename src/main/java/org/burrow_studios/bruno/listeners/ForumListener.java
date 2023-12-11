@@ -47,9 +47,7 @@ public class ForumListener extends ListenerAdapter {
         // No checks required since ChannelUpdateLockedEvents are limited to thread channels inside forum channels
         ThreadChannel channel = event.getChannel().asThreadChannel();
 
-        if (isLocked)
-            TagHelper.removePriorities(channel);
-        else
+        if (!isLocked)
             TagHelper.checkTags(channel);
     }
 }
