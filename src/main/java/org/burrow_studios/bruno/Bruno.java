@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.burrow_studios.bruno.listeners.CommandListener;
 import org.burrow_studios.bruno.listeners.ForumListener;
 import org.burrow_studios.bruno.tags.TagHelper;
 import org.burrow_studios.bruno.util.ResourceUtil;
@@ -64,7 +65,8 @@ public class Bruno extends Thread {
                     GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
                 .addEventListeners(
-                        new ForumListener(this)
+                        new ForumListener(this),
+                        new CommandListener(this)
                 )
                 .build();
     }
@@ -92,6 +94,9 @@ public class Bruno extends Thread {
         LOG.log(Level.INFO, "Checking existing channels.");
         for (ThreadChannel channel : forum.getThreadChannels())
             TagHelper.checkTags(channel);
+
+        LOG.log(Level.INFO, "Upserting commands.");
+        jda.upsertCommand("close", "Closes an issue").queue();
 
         LOG.log(Level.INFO, "OK!");
 
