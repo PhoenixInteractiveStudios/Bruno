@@ -2,6 +2,7 @@ package org.burrow_studios.bruno;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
@@ -69,6 +70,7 @@ public class Bruno extends Thread {
                         new ForumListener(this),
                         new CommandListener(this)
                 )
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .build();
     }
 
@@ -102,12 +104,14 @@ public class Bruno extends Thread {
                 .setGuildOnly(true)
                 .queue();
 
+        jda.getPresence().setStatus(OnlineStatus.ONLINE);
         LOG.log(Level.INFO, "OK!");
 
         // Shut down on user input
         Scanner scanner = new Scanner(System.in);
         scanner.hasNextLine();
 
+        jda.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
         LOG.log(Level.INFO, "Shutting down...");
 
         jda.shutdown();
