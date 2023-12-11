@@ -6,7 +6,9 @@ import net.dv8tion.jda.api.entities.channel.forums.BaseForumTag;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTagData;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.managers.channel.concrete.ThreadChannelManager;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ public class TagHelper {
     public static void checkTags(@NotNull ThreadChannel thread, @NotNull List<ForumTag> addedTags) {
         if (!(thread.getParentChannel() instanceof ForumChannel forum))
             throw new IllegalArgumentException("thread is not in a forum channel");
+
+        if (thread.isArchived()) return;
 
         // blocks until all required tags are available
         upsertTags(forum);
@@ -129,7 +133,17 @@ public class TagHelper {
         }
 
         // apply changes
-        thread.getManager().setAppliedTags(newTags).queue();
+        thread.getManager()
+                .setAppliedTags(newTags)
+                // filter: ignore 'thread is archived' error (synchronization issue)
+                .onErrorMap(throwable -> {
+                    if (!(throwable instanceof ErrorResponseException ex))
+                        return false;
+
+                    ErrorResponse error = ex.getErrorResponse();
+                    return error.equals(ErrorResponse.ILLEGAL_OPERATION_ARCHIVED_THREAD);
+                    }, throwable -> null
+                ).queue();
     }
 
     public static ThreadChannelManager removePriorities(ThreadChannel thread) {

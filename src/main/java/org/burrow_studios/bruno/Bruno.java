@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.burrow_studios.bruno.listeners.CommandListener;
 import org.burrow_studios.bruno.listeners.ForumListener;
@@ -96,7 +97,10 @@ public class Bruno extends Thread {
             TagHelper.checkTags(channel);
 
         LOG.log(Level.INFO, "Upserting commands.");
-        jda.upsertCommand(CommandListener.COMMAND_CLOSE, "Closes an issue").queue();
+        jda.upsertCommand(CommandListener.COMMAND_CLOSE, "Closes an issue")
+                .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+                .setGuildOnly(true)
+                .queue();
 
         LOG.log(Level.INFO, "OK!");
 

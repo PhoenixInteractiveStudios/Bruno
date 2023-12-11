@@ -51,7 +51,7 @@ public class CommandListener extends ListenerAdapter {
         RestAction.allOf(
                 event.deferReply(false),
                 TagHelper.removePriorities(channel),
-                event.reply("Issue closed"),
+                event.getHook().sendMessage("Issue closed"),
                 channel.getManager().setArchived(true)
         ).queue();
     }
