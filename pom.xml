@@ -38,9 +38,9 @@
 
 
     <scm>
-        <connection>scm:git:git://github.com/TurtleException/TurtleNet.git</connection>
-        <developerConnection>scm:git:ssh://github.com:TurtleException/TurtleNet.git</developerConnection>
-        <url>http://github.com/TurtleException/TurtleNet</url>
+        <connection>scm:git:git://github.com/BurrowStudios/Bruno.git</connection>
+        <developerConnection>scm:git:ssh://github.com:BurrowStudios/Bruno.git</developerConnection>
+        <url>http://github.com/BurrowStudios/Bruno</url>
     </scm>
 
 
