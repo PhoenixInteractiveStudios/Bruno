@@ -69,7 +69,6 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>config.properties</include>
-                    <include>idcache.json</include>
                 </includes>
             </resource>
 
