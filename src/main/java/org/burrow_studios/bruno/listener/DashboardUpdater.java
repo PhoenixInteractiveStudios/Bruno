@@ -3,12 +3,14 @@ package org.burrow_studios.bruno.listener;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
 import net.dv8tion.jda.api.events.session.SessionResumeEvent;
@@ -19,7 +21,11 @@ import org.burrow_studios.bruno.Bruno;
 import org.burrow_studios.bruno.dashboard.DashboardReport;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
+
 public class DashboardUpdater extends ListenerAdapter {
+    public static final String REFRESH_BUTTON_ID = "refresh";
+
     private final Bruno bruno;
 
     public DashboardUpdater(@NotNull Bruno bruno) {
@@ -77,6 +83,18 @@ public class DashboardUpdater extends ListenerAdapter {
         this.onChannelEvent(event.getChannel());
     }
 
+    @Override
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        if (!event.getChannel().equals(this.getChannel())) return;
+        if (!REFRESH_BUTTON_ID.equals(event.getButton().getId())) return;
+
+        event.deferReply(true).complete();
+
+        this.update();
+
+        event.getHook().deleteOriginal().queueAfter(1, TimeUnit.SECONDS);
+    }
+
     private void onChannelEvent(@NotNull ChannelUnion channel) {
         if (!channel.getType().isThread()) return;
         ThreadChannel thread = channel.asThreadChannel();
@@ -113,6 +131,17 @@ public class DashboardUpdater extends ListenerAdapter {
         ForumChannel channel = this.bruno.getJDA().getForumChannelById(this.bruno.getConfig().forumChannel());
         if (channel == null)
             throw new NullPointerException("Forum channel does not exist or is not reachable");
+        return channel;
+    }
+
+    private @NotNull TextChannel getChannel() {
+        long channelId = this.bruno.getConfig().boardChannel();
+
+        TextChannel channel = this.bruno.getJDA().getTextChannelById(channelId);
+
+        if (channel == null)
+            throw new NullPointerException("Board channel does not exist or is not reachable");
+
         return channel;
     }
 }

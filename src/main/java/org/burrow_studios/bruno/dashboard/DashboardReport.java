@@ -1,9 +1,12 @@
 package org.burrow_studios.bruno.dashboard;
 
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.requests.restaction.MessageEditAction;
 import org.burrow_studios.bruno.Bruno;
+import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -27,11 +30,13 @@ public class DashboardReport {
 
     @NotNull MessageCreateAction applyCreate(@NotNull MessageCreateAction action) {
         action.setContent(this.getContent());
+        action.setActionRow(Button.of(ButtonStyle.SECONDARY, DashboardUpdater.REFRESH_BUTTON_ID, this.bruno.getTextProvider().get("board.refresh")));
         return action;
     }
 
     @NotNull MessageEditAction applyEdit(@NotNull MessageEditAction action) {
         action.setContent(this.getContent());
+        action.setActionRow(Button.of(ButtonStyle.SECONDARY, DashboardUpdater.REFRESH_BUTTON_ID, this.bruno.getTextProvider().get("board.refresh")));
         return action;
     }
 
