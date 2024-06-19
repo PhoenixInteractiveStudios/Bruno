@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.burrow_studios.bruno.dashboard.DashboardService;
 import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.text.TextProvider;
 import org.burrow_studios.bruno.util.ResourceTools;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class Bruno {
     private static final Logger LOG = LoggerFactory.getLogger(Bruno.class);
 
+    private DashboardService dashboardService;
     private TextProvider textProvider;
     private JDA jda;
 
@@ -40,6 +42,8 @@ public class Bruno {
         LOG.info("Parsing text.json");
         this.textProvider = new TextProvider(new File(Main.DIR, "text.json"));
 
+        LOG.info("Initializing DashboardService");
+        this.dashboardService = new DashboardService(this);
 
         LOG.info("Initializing JDA");
         this.jda = JDABuilder.create(config.token(),
@@ -80,6 +84,14 @@ public class Bruno {
 
     public @NotNull TextProvider getTextProvider() {
         return this.textProvider;
+    }
+
+    public @NotNull DashboardService getDashboardService() {
+        return this.dashboardService;
+    }
+
+    public @NotNull JDA getJDA() {
+        return this.jda;
     }
 
     public @NotNull Config getConfig() {
