@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.burrow_studios.bruno.dashboard.DashboardService;
 import org.burrow_studios.bruno.listener.DashboardCleaner;
+import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.burrow_studios.bruno.text.TextProvider;
 import org.burrow_studios.bruno.util.ResourceTools;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,7 @@ public class Bruno {
                 .disableCache(CacheFlag.SCHEDULED_EVENTS)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .addEventListeners(new DashboardCleaner(this))
+                .addEventListeners(new DashboardUpdater(this))
                 .build();
 
         this.jda.awaitReady();
