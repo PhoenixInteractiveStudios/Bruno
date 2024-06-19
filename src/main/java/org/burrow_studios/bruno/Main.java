@@ -25,9 +25,14 @@ public class Main {
         DIR = f;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (VERSION == null)
             throw new Error("Unknown version");
         System.out.printf(" version %s...%n", VERSION);
+
+        Bruno bruno = new Bruno();
+        Runtime.getRuntime().addShutdownHook(new Thread(bruno::stop));
+
+        bruno.start();
     }
 }
