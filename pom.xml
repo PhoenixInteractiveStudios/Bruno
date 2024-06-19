@@ -71,5 +71,26 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <!-- Write version into resource file -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>meta.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
+
+    
+    <dependencies>
+        <!-- Annotations (@NotNull and the like) -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+    </dependencies>
 </project>
