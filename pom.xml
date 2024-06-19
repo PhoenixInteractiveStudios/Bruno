@@ -82,6 +82,14 @@
                 </includes>
             </resource>
 
+            <!-- Default config -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>config.properties</include>
+                </includes>
+            </resource>
+
             <!-- Logging configuration -->
             <resource>
                 <directory>src/main/resources</directory>

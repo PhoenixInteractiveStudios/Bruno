@@ -41,4 +41,26 @@ public class ResourceTools {
     public @Nullable InputStream getResource(@NotNull String name) {
         return classLoader.getResourceAsStream(name);
     }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void createDefault(@NotNull File dir, @NotNull String resource) throws IOException {
+        File file = new File(dir, resource);
+        if (file.exists()) return;
+
+        file.createNewFile();
+
+        try(
+                InputStream   inStream = getResource(resource);
+                OutputStream outStream = new FileOutputStream(file)
+        ) {
+            if (inStream == null)
+                throw new IllegalArgumentException("No such resource: " + resource);
+
+            int readBytes;
+            byte[] buffer = new byte[4096];
+            while ((readBytes = inStream.read(buffer)) > 0) {
+                outStream.write(buffer, 0, readBytes);
+            }
+        }
+    }
 }
