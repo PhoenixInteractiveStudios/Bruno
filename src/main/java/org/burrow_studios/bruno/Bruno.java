@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.util.ResourceTools;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class Bruno {
                 .disableCache(CacheFlag.ONLINE_STATUS)
                 .disableCache(CacheFlag.SCHEDULED_EVENTS)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .addEventListeners(new DashboardCleaner(this))
                 .build();
 
         this.jda.awaitReady();
