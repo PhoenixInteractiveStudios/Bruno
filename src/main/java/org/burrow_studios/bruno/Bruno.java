@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.burrow_studios.bruno.dashboard.DashboardService;
 import org.burrow_studios.bruno.emoji.EmojiProvider;
+import org.burrow_studios.bruno.forum.ForumManager;
 import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.burrow_studios.bruno.listener.PriorityTagObserver;
@@ -25,6 +26,7 @@ public class Bruno {
 
     private DashboardService dashboardService;
     private EmojiProvider emojiProvider;
+    private ForumManager forumManager;
     private TextProvider textProvider;
     private JDA jda;
 
@@ -52,6 +54,9 @@ public class Bruno {
 
         LOG.info("Initializing EmojiProvider");
         this.emojiProvider = new EmojiProvider(new File(Main.DIR, "emojis.json"));
+
+        LOG.info("Initializing ForumManager");
+        this.forumManager = new ForumManager(this);
 
         LOG.info("Initializing DashboardService");
         this.dashboardService = new DashboardService(this);
@@ -97,6 +102,10 @@ public class Bruno {
 
     public @NotNull TextProvider getTextProvider() {
         return this.textProvider;
+    }
+
+    public @NotNull ForumManager getForumManager() {
+        return this.forumManager;
     }
 
     public @NotNull EmojiProvider getEmojiProvider() {
