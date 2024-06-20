@@ -49,9 +49,6 @@ public class DashboardReport {
     public @NotNull String getContent() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("# ");
-        builder.append(this.bruno.getTextProvider().get("board.header"));
-
         List<Long> users = List.copyOf(this.bruno.getEmojiProvider().getUsers());
 
         entries.forEach(entry -> {
