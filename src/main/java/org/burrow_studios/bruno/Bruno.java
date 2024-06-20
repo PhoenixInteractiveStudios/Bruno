@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
+import net.dv8tion.jda.api.entities.channel.forums.BaseForumTag;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.burrow_studios.bruno.dashboard.DashboardService;
@@ -16,6 +17,7 @@ import org.burrow_studios.bruno.listener.RefreshListener;
 import org.burrow_studios.bruno.text.TextProvider;
 import org.burrow_studios.bruno.util.ResourceTools;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,5 +133,19 @@ public class Bruno {
         if (channel == null)
             throw new NullPointerException("Forum channel does not exist or is not reachable");
         return channel;
+    }
+
+    public @Nullable Priority getPriority(@NotNull BaseForumTag tag) {
+        String prefix = this.textProvider.get("forum.tags.priority.prefix");
+
+        if (!tag.getName().startsWith(prefix)) return null;
+
+        for (Priority priority : Priority.values()) {
+            String name = prefix + this.textProvider.get("forum.tags.priority." + priority.name().toLowerCase());
+
+            if (tag.getName().equals(name)) return priority;
+        }
+
+        return null;
     }
 }

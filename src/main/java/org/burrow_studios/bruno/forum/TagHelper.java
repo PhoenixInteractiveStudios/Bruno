@@ -27,7 +27,7 @@ class TagHelper {
         Priority priority = null;
 
         for (ForumTag oldTag : thread.getAppliedTags()) {
-            Priority p = this.forumManager.getPriority(oldTag);
+            Priority p = this.forumManager.getBruno().getPriority(oldTag);
 
             if (p == null) {
                 // non-priority tag; can be kept
@@ -43,7 +43,7 @@ class TagHelper {
         boolean addedTagsContainPriority = false;
 
         for (ForumTag addedTag : addedTags) {
-            Priority p = this.forumManager.getPriority(addedTag);
+            Priority p = this.forumManager.getBruno().getPriority(addedTag);
 
             if (p == null) {
                 // non-priority tag; can be kept
@@ -75,7 +75,7 @@ class TagHelper {
              * since calling upsertTags() would ensure that but in case that fails this would also dail, so we'll ignore it.
              */
             for (ForumTag availableTag : this.forumManager.getBruno().getForum().getAvailableTags()) {
-                Priority p = this.forumManager.getPriority(availableTag);
+                Priority p = this.forumManager.getBruno().getPriority(availableTag);
 
                 if (priority == p)
                     tags.add(availableTag);

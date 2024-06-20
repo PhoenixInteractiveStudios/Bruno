@@ -26,11 +26,6 @@ public class DashboardService {
     }
 
     public void update() {
-        final String pPrefix = this.bruno.getTextProvider().get("forum.tags.priority.prefix");
-        final String pLow     = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.low");
-        final String pHigh    = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.high");
-        final String pHighest = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.highest");
-
         ForumChannel forum = this.bruno.getForum();
 
         EmojiUnion assignEmoji = Emoji.fromFormatted(this.bruno.getEmojiProvider().getAssign());
@@ -41,18 +36,12 @@ public class DashboardService {
             Priority priority = Priority.MID;
 
             for (ForumTag tag : post.getAppliedTags()) {
-                if (tag.getName().equals(pLow)) {
-                    priority = Priority.LOW;
-                    break;
-                }
-                if (tag.getName().equals(pHigh)) {
-                    priority = Priority.HIGH;
-                    break;
-                }
-                if (tag.getName().equals(pHighest)) {
-                    priority = Priority.HIGHEST;
-                    break;
-                }
+                Priority p = this.bruno.getPriority(tag);
+
+                if (p == null) continue;
+
+                priority = p;
+                break;
             }
 
             ArrayList<Long> assignees = new ArrayList<>();

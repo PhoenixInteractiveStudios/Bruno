@@ -1,13 +1,9 @@
 package org.burrow_studios.bruno.forum;
 
-import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
-import net.dv8tion.jda.api.entities.channel.forums.BaseForumTag;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import org.burrow_studios.bruno.Bruno;
-import org.burrow_studios.bruno.Priority;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -46,19 +42,5 @@ public class ForumManager {
 
     public void upsertTags() {
         this.tagHelper.upsertTags();
-    }
-
-    @Nullable Priority getPriority(@NotNull BaseForumTag tag) {
-        String prefix = this.bruno.getTextProvider().get("forum.tags.priority.prefix");
-
-        if (!tag.getName().startsWith(prefix)) return null;
-
-        for (Priority priority : Priority.values()) {
-            String name = prefix + this.bruno.getTextProvider().get("forum.tags.priority." + priority.name().toLowerCase());
-
-            if (tag.getName().equals(name)) return priority;
-        }
-
-        return null;
     }
 }
