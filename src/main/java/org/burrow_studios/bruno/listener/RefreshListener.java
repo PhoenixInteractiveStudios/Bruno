@@ -23,6 +23,8 @@ public class RefreshListener extends ListenerAdapter {
 
         event.deferReply(true).complete();
 
+        this.bruno.getForumManager().upsertTags();
+        this.bruno.getForumManager().checkTags();
         this.bruno.getDashboardService().update();
 
         event.getHook().deleteOriginal().queueAfter(1, TimeUnit.SECONDS);
