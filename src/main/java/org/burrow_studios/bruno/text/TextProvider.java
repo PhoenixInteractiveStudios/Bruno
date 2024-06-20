@@ -27,7 +27,7 @@ public class TextProvider {
     public @NotNull String get(@NotNull String key) throws NoSuchElementException {
         String str = this.text.get(key);
         if (str == null)
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(key);
         return str;
     }
 

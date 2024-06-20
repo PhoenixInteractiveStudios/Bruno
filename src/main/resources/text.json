@@ -1,4 +1,9 @@
 {
   "board.header": "Übersicht",
-  "board.refresh": "Aktualisieren"
+  "board.refresh": "Aktualisieren",
+  "forum.tags.priority.prefix": "Priorität: ",
+  "forum.tags.priority.low": "Niedrig",
+  "forum.tags.priority.mid": "Mittel",
+  "forum.tags.priority.high": "Hoch",
+  "forum.tags.priority.highest": "Sehr hoch"
 }

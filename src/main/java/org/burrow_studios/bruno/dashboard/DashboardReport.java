@@ -1,11 +1,13 @@
 package org.burrow_studios.bruno.dashboard;
 
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.requests.restaction.MessageEditAction;
 import org.burrow_studios.bruno.Bruno;
+import org.burrow_studios.bruno.Priority;
 import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +26,8 @@ public class DashboardReport {
         this.entries = new TreeSet<>(Comparator.comparing(entry -> entry.channel().getTimeCreated().toInstant()));
     }
 
-    public void addEntry(@NotNull ThreadChannel post) {
-        this.entries.add(new Entry(post));
+    public void addEntry(@NotNull ThreadChannel post, @NotNull Priority priority) {
+        this.entries.add(new Entry(post, priority));
     }
 
     @NotNull MessageCreateAction applyCreate(@NotNull MessageCreateAction action) {
@@ -41,7 +43,8 @@ public class DashboardReport {
     }
 
     private record Entry(
-            @NotNull ThreadChannel channel
+            @NotNull ThreadChannel channel,
+            @NotNull Priority priority
     ) { }
 
     public @NotNull String getContent() {
@@ -52,6 +55,8 @@ public class DashboardReport {
 
         entries.forEach(entry -> {
             builder.append("\n");
+            builder.append(this.bruno.getEmojiProvider().getPriority(entry.priority()));
+            builder.append("   ");
             builder.append(entry.channel().getAsMention());
         });
 
