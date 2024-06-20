@@ -1,0 +1,12 @@
+# Include markdown (docs) as detectable language
+*.md linguist-vendored=false
+*.md linguist-generated=false
+*.md linguist-documentation=false
+*.md linguist-detectable=true
+
+# Include maven files as detectable language
+*.xml linguist-detectable
+
+# Include config files
+*.properties linguist-detectable
+*.json linguist-detectable
