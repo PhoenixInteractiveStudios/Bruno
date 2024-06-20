@@ -1,0 +1,11 @@
+{
+  "priority.low": "\uD83D\uDFE2",
+  "priority.mid": "\uD83D\uDFE1",
+  "priority.high": "\uD83D\uDFE0",
+  "priority.highest": "\uD83D\uDD34",
+
+  "user.default.on": "❓",
+  "user.default.off": "❔",
+
+  "assign": "☑\uFE0F"
+}
