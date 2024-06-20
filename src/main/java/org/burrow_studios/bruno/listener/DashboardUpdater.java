@@ -84,7 +84,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        if (!event.getChannel().equals(this.getChannel())) return;
+        if (!event.getChannel().equals(this.bruno.getDashboardService().getChannel())) return;
         if (!REFRESH_BUTTON_ID.equals(event.getButton().getId())) return;
 
         event.deferReply(true).complete();
@@ -125,16 +125,5 @@ public class DashboardUpdater extends ListenerAdapter {
         channel.join().queue();
 
         this.bruno.getDashboardService().update();
-    }
-
-    private @NotNull TextChannel getChannel() {
-        long channelId = this.bruno.getConfig().boardChannel();
-
-        TextChannel channel = this.bruno.getJDA().getTextChannelById(channelId);
-
-        if (channel == null)
-            throw new NullPointerException("Board channel does not exist or is not reachable");
-
-        return channel;
     }
 }

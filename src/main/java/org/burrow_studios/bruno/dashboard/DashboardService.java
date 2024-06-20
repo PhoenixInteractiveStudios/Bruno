@@ -72,7 +72,7 @@ public class DashboardService {
         report.applyCreate(channel.sendMessage("")).queue();
     }
 
-    private @NotNull TextChannel getChannel() {
+    public @NotNull TextChannel getChannel() {
         long channelId = this.bruno.getConfig().boardChannel();
 
         TextChannel channel = this.bruno.getJDA().getTextChannelById(channelId);
