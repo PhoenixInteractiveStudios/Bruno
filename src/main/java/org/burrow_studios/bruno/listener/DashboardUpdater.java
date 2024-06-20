@@ -1,11 +1,9 @@
 package org.burrow_studios.bruno.listener;
 
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
-import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
@@ -20,8 +18,6 @@ import net.dv8tion.jda.api.events.thread.ThreadHiddenEvent;
 import net.dv8tion.jda.api.events.thread.ThreadRevealedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.burrow_studios.bruno.Bruno;
-import org.burrow_studios.bruno.Priority;
-import org.burrow_studios.bruno.dashboard.DashboardReport;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -40,7 +36,7 @@ public class DashboardUpdater extends ListenerAdapter {
         for (ThreadChannel channel : this.getForum().getThreadChannels())
             channel.join().queue();
 
-        this.update();
+        this.bruno.getDashboardService().update();
     }
 
     @Override
@@ -48,7 +44,7 @@ public class DashboardUpdater extends ListenerAdapter {
         for (ThreadChannel channel : this.getForum().getThreadChannels())
             channel.join().queue();
 
-        this.update();
+        this.bruno.getDashboardService().update();
     }
 
     @Override
@@ -56,7 +52,7 @@ public class DashboardUpdater extends ListenerAdapter {
         for (ThreadChannel channel : this.getForum().getThreadChannels())
             channel.join().queue();
 
-        this.update();
+        this.bruno.getDashboardService().update();
     }
 
     @Override
@@ -93,7 +89,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
         event.deferReply(true).complete();
 
-        this.update();
+        this.bruno.getDashboardService().update();
 
         event.getHook().deleteOriginal().queueAfter(1, TimeUnit.SECONDS);
     }
@@ -107,7 +103,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
         if (expectedForum != actualForum) return;
 
-        this.update();
+        this.bruno.getDashboardService().update();
     }
 
     private void onChannelEvent(@NotNull ChannelUnion channel) {
@@ -128,41 +124,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
         channel.join().queue();
 
-        this.update();
-    }
-
-    private void update() {
-        final String pPrefix = this.bruno.getTextProvider().get("forum.tags.priority.prefix");
-        final String pLow     = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.low");
-        final String pHigh    = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.high");
-        final String pHighest = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.highest");
-
-        ForumChannel forum = this.getForum();
-
-        DashboardReport report = new DashboardReport(this.bruno);
-
-        for (ThreadChannel post : forum.getThreadChannels()) {
-            Priority priority = Priority.MID;
-
-            for (ForumTag tag : post.getAppliedTags()) {
-                if (tag.getName().equals(pLow)) {
-                    priority = Priority.LOW;
-                    break;
-                }
-                if (tag.getName().equals(pHigh)) {
-                    priority = Priority.HIGH;
-                    break;
-                }
-                if (tag.getName().equals(pHighest)) {
-                    priority = Priority.HIGHEST;
-                    break;
-                }
-            }
-
-            report.addEntry(post, priority);
-        }
-
-        this.bruno.getDashboardService().update(report);
+        this.bruno.getDashboardService().update();
     }
 
     private @NotNull ForumChannel getForum() {
