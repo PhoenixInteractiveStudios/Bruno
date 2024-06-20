@@ -74,7 +74,7 @@ class TagHelper {
              * If the required priority tag does not exist the bot will ignore priority. All tags SHOULD exist at this point
              * since calling upsertTags() would ensure that but in case that fails this would also dail, so we'll ignore it.
              */
-            for (ForumTag availableTag : this.forumManager.getForum().getAvailableTags()) {
+            for (ForumTag availableTag : this.forumManager.getBruno().getForum().getAvailableTags()) {
                 Priority p = this.forumManager.getPriority(availableTag);
 
                 if (priority == p)
@@ -99,7 +99,7 @@ class TagHelper {
     public void upsertTags() {
         String prefix = this.forumManager.getBruno().getTextProvider().get("forum.tags.priority.prefix");
 
-        ForumChannel forum = this.forumManager.getForum();
+        ForumChannel forum = this.forumManager.getBruno().getForum();
 
         List<BaseForumTag> tags = new ArrayList<>();
         List<ForumTag> oldTags = forum.getAvailableTags();

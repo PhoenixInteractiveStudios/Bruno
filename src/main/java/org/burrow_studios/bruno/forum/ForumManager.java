@@ -27,7 +27,7 @@ public class ForumManager {
     }
 
     public void checkTags() {
-        for (ThreadChannel thread : this.getForum().getThreadChannels())
+        for (ThreadChannel thread : this.bruno.getForum().getThreadChannels())
             this.checkTags(thread);
     }
 
@@ -60,12 +60,5 @@ public class ForumManager {
         }
 
         return null;
-    }
-
-    @NotNull ForumChannel getForum() {
-        ForumChannel channel = this.bruno.getJDA().getForumChannelById(this.bruno.getConfig().forumChannel());
-        if (channel == null)
-            throw new NullPointerException("Forum channel does not exist or is not reachable");
-        return channel;
     }
 }

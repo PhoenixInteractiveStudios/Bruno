@@ -33,7 +33,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
-        for (ThreadChannel channel : this.getForum().getThreadChannels())
+        for (ThreadChannel channel : this.bruno.getForum().getThreadChannels())
             channel.join().queue();
 
         this.bruno.getDashboardService().update();
@@ -41,7 +41,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
     @Override
     public void onSessionResume(@NotNull SessionResumeEvent event) {
-        for (ThreadChannel channel : this.getForum().getThreadChannels())
+        for (ThreadChannel channel : this.bruno.getForum().getThreadChannels())
             channel.join().queue();
 
         this.bruno.getDashboardService().update();
@@ -49,7 +49,7 @@ public class DashboardUpdater extends ListenerAdapter {
 
     @Override
     public void onSessionRecreate(@NotNull SessionRecreateEvent event) {
-        for (ThreadChannel channel : this.getForum().getThreadChannels())
+        for (ThreadChannel channel : this.bruno.getForum().getThreadChannels())
             channel.join().queue();
 
         this.bruno.getDashboardService().update();
@@ -125,13 +125,6 @@ public class DashboardUpdater extends ListenerAdapter {
         channel.join().queue();
 
         this.bruno.getDashboardService().update();
-    }
-
-    private @NotNull ForumChannel getForum() {
-        ForumChannel channel = this.bruno.getJDA().getForumChannelById(this.bruno.getConfig().forumChannel());
-        if (channel == null)
-            throw new NullPointerException("Forum channel does not exist or is not reachable");
-        return channel;
     }
 
     private @NotNull TextChannel getChannel() {

@@ -3,6 +3,7 @@ package org.burrow_studios.bruno;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.burrow_studios.bruno.dashboard.DashboardService;
@@ -122,5 +123,12 @@ public class Bruno {
 
     public @NotNull Config getConfig() {
         return this.config;
+    }
+
+    public @NotNull ForumChannel getForum() {
+        ForumChannel channel = this.jda.getForumChannelById(this.config.forumChannel());
+        if (channel == null)
+            throw new NullPointerException("Forum channel does not exist or is not reachable");
+        return channel;
     }
 }

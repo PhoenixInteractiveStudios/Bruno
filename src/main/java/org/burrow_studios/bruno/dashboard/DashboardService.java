@@ -23,7 +23,7 @@ public class DashboardService {
         final String pHigh    = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.high");
         final String pHighest = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.highest");
 
-        ForumChannel forum = this.getForum();
+        ForumChannel forum = this.bruno.getForum();
 
         DashboardReport report = new DashboardReport(this.bruno);
 
@@ -70,13 +70,6 @@ public class DashboardService {
         }
 
         report.applyCreate(channel.sendMessage("")).queue();
-    }
-
-    private @NotNull ForumChannel getForum() {
-        ForumChannel channel = this.bruno.getJDA().getForumChannelById(this.bruno.getConfig().forumChannel());
-        if (channel == null)
-            throw new NullPointerException("Forum channel does not exist or is not reachable");
-        return channel;
     }
 
     private @NotNull TextChannel getChannel() {
