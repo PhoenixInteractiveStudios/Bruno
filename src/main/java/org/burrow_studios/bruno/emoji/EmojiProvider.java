@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EmojiProvider {
@@ -109,6 +109,13 @@ public class EmojiProvider {
             emoji = on ? defaultUserOn : defaultUserOff;
 
         return emoji;
+    }
+
+    public @NotNull Set<Long> getUsers() {
+        Set<Long> users = new TreeSet<>();
+        users.addAll(this.usersOn.keySet());
+        users.addAll(this.usersOff.keySet());
+        return Collections.unmodifiableSet(users);
     }
 
     public @NotNull String getPriority(@NotNull Priority priority) {

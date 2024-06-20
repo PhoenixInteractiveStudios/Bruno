@@ -4,10 +4,12 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateAppliedTagsEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
 import net.dv8tion.jda.api.events.session.SessionResumeEvent;
@@ -81,6 +83,20 @@ public class DashboardUpdater extends ListenerAdapter {
 
         final long expectedForum = this.bruno.getConfig().forumChannel();
         final long   actualForum = thread.getParentChannel().getIdLong();
+
+        if (expectedForum != actualForum) return;
+
+        this.bruno.getDashboardService().update();
+    }
+
+    @Override
+    public void onGenericMessageReaction(@NotNull GenericMessageReactionEvent event) {
+        if (!event.getChannelType().isThread()) return;
+
+        IThreadContainerUnion threadContainer = event.getChannel().asThreadChannel().getParentChannel();
+
+        final long expectedForum = this.bruno.getConfig().forumChannel();
+        final long   actualForum = threadContainer.getIdLong();
 
         if (expectedForum != actualForum) return;
 

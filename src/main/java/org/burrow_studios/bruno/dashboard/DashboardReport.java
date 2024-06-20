@@ -1,5 +1,6 @@
 package org.burrow_studios.bruno.dashboard;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
@@ -10,9 +11,7 @@ import org.burrow_studios.bruno.Priority;
 import org.burrow_studios.bruno.listener.RefreshListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class DashboardReport {
     private final Bruno bruno;
@@ -25,8 +24,8 @@ public class DashboardReport {
         this.entries = new TreeSet<>(Comparator.comparing(entry -> entry.channel().getTimeCreated().toInstant()));
     }
 
-    public void addEntry(@NotNull ThreadChannel post, @NotNull Priority priority) {
-        this.entries.add(new Entry(post, priority));
+    public void addEntry(@NotNull ThreadChannel post, @NotNull Priority priority, @NotNull List<Long> assignees) {
+        this.entries.add(new Entry(post, priority, List.copyOf(assignees)));
     }
 
     @NotNull MessageCreateAction applyCreate(@NotNull MessageCreateAction action) {
@@ -43,7 +42,8 @@ public class DashboardReport {
 
     private record Entry(
             @NotNull ThreadChannel channel,
-            @NotNull Priority priority
+            @NotNull Priority priority,
+            @NotNull List<Long> assignees
     ) { }
 
     public @NotNull String getContent() {
@@ -52,10 +52,25 @@ public class DashboardReport {
         builder.append("# ");
         builder.append(this.bruno.getTextProvider().get("board.header"));
 
+        List<Long> users = List.copyOf(this.bruno.getEmojiProvider().getUsers());
+
         entries.forEach(entry -> {
             builder.append("\n");
+
+            // assignees
+            for (Long user : users) {
+                builder.append(this.bruno.getEmojiProvider().getUser(user, entry.assignees.contains(user)));
+                builder.append(" ");
+            }
+            if (!users.isEmpty()) {
+                builder.append("  |   ");
+            }
+
+            // priority
             builder.append(this.bruno.getEmojiProvider().getPriority(entry.priority()));
             builder.append("   ");
+
+            // clickable title
             builder.append(entry.channel().getAsMention());
         });
 

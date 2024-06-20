@@ -2,13 +2,21 @@ package org.burrow_studios.bruno.dashboard;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import org.burrow_studios.bruno.Bruno;
 import org.burrow_studios.bruno.Priority;
+import org.burrow_studios.bruno.emoji.EmojiProvider;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardService {
     private final Bruno bruno;
@@ -24,6 +32,8 @@ public class DashboardService {
         final String pHighest = pPrefix + this.bruno.getTextProvider().get("forum.tags.priority.highest");
 
         ForumChannel forum = this.bruno.getForum();
+
+        EmojiUnion assignEmoji = Emoji.fromFormatted(this.bruno.getEmojiProvider().getAssign());
 
         DashboardReport report = new DashboardReport(this.bruno);
 
@@ -45,7 +55,23 @@ public class DashboardService {
                 }
             }
 
-            report.addEntry(post, priority);
+            ArrayList<Long> assignees = new ArrayList<>();
+
+            MessageHistory history = post.getHistoryFromBeginning(1).complete();
+            if (!history.isEmpty()) {
+                Message initialMessage = history.getRetrievedHistory().get(0);
+
+                MessageReaction reaction = initialMessage.getReaction(assignEmoji);
+
+                if (reaction != null) {
+                    List<User> users = reaction.retrieveUsers().complete();
+
+                    for (User user : users)
+                        assignees.add(user.getIdLong());
+                }
+            }
+
+            report.addEntry(post, priority, assignees);
         }
 
         this.bruno.getDashboardService().update(report);
