@@ -12,13 +12,13 @@ import org.burrow_studios.bruno.forum.ForumManager;
 import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.burrow_studios.bruno.listener.PriorityTagObserver;
+import org.burrow_studios.bruno.listener.RefreshListener;
 import org.burrow_studios.bruno.text.TextProvider;
 import org.burrow_studios.bruno.util.ResourceTools;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import java.io.File;
 import java.io.IOException;
 
@@ -77,6 +77,7 @@ public class Bruno {
                 .addEventListeners(new DashboardCleaner(this))
                 .addEventListeners(new DashboardUpdater(this))
                 .addEventListeners(new PriorityTagObserver(this))
+                .addEventListeners(new RefreshListener(this))
                 .build();
 
         this.jda.awaitReady();

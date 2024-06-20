@@ -1,8 +1,6 @@
 package org.burrow_studios.bruno.listener;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
@@ -10,7 +8,6 @@ import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateAppliedTagsEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
 import net.dv8tion.jda.api.events.session.SessionResumeEvent;
@@ -20,11 +17,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.burrow_studios.bruno.Bruno;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.TimeUnit;
-
 public class DashboardUpdater extends ListenerAdapter {
-    public static final String REFRESH_BUTTON_ID = "refresh";
-
     private final Bruno bruno;
 
     public DashboardUpdater(@NotNull Bruno bruno) {
@@ -80,18 +73,6 @@ public class DashboardUpdater extends ListenerAdapter {
         if (Boolean.TRUE.equals(event.getNewValue())) return;
 
         this.onChannelEvent(event.getChannel());
-    }
-
-    @Override
-    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        if (!event.getChannel().equals(this.bruno.getDashboardService().getChannel())) return;
-        if (!REFRESH_BUTTON_ID.equals(event.getButton().getId())) return;
-
-        event.deferReply(true).complete();
-
-        this.bruno.getDashboardService().update();
-
-        event.getHook().deleteOriginal().queueAfter(1, TimeUnit.SECONDS);
     }
 
     @Override
