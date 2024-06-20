@@ -9,6 +9,7 @@ import org.burrow_studios.bruno.dashboard.DashboardService;
 import org.burrow_studios.bruno.emoji.EmojiProvider;
 import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.listener.DashboardUpdater;
+import org.burrow_studios.bruno.listener.PriorityTagObserver;
 import org.burrow_studios.bruno.text.TextProvider;
 import org.burrow_studios.bruno.util.ResourceTools;
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +70,7 @@ public class Bruno {
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .addEventListeners(new DashboardCleaner(this))
                 .addEventListeners(new DashboardUpdater(this))
+                .addEventListeners(new PriorityTagObserver(this))
                 .build();
 
         this.jda.awaitReady();
