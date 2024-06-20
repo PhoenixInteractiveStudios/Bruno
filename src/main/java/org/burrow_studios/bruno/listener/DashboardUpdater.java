@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
+import net.dv8tion.jda.api.events.channel.update.ChannelUpdateAppliedTagsEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -95,6 +96,18 @@ public class DashboardUpdater extends ListenerAdapter {
         this.update();
 
         event.getHook().deleteOriginal().queueAfter(1, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onChannelUpdateAppliedTags(@NotNull ChannelUpdateAppliedTagsEvent event) {
+        ThreadChannel thread = event.getChannel().asThreadChannel();
+
+        final long expectedForum = this.bruno.getConfig().forumChannel();
+        final long   actualForum = thread.getParentChannel().getIdLong();
+
+        if (expectedForum != actualForum) return;
+
+        this.update();
     }
 
     private void onChannelEvent(@NotNull ChannelUnion channel) {
