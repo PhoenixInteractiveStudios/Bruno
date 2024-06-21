@@ -5,8 +5,8 @@
   "priority.high": "\uD83D\uDFE0",
   "priority.highest": "\uD83D\uDD34",
 
-  "user.default.on": "❓",
-  "user.default.off": "❔",
+  "user.default.on": "\u2753",
+  "user.default.off": "\u2754",
 
-  "assign": "☑\uFE0F"
+  "assign": "\u2611\uFE0F"
 }
