@@ -18,7 +18,7 @@ public class RefreshListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        if (!event.getChannel().equals(this.bruno.getDashboardService().getChannel())) return;
+        if (!event.getChannel().equals(this.bruno.getDashboardService().getThread())) return;
         if (!REFRESH_BUTTON_ID.equals(event.getButton().getId())) return;
 
         event.deferReply(true).complete();

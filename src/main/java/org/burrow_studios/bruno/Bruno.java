@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.burrow_studios.bruno.dashboard.DashboardService;
 import org.burrow_studios.bruno.emoji.EmojiProvider;
 import org.burrow_studios.bruno.forum.ForumManager;
-import org.burrow_studios.bruno.listener.DashboardCleaner;
 import org.burrow_studios.bruno.listener.DashboardUpdater;
 import org.burrow_studios.bruno.listener.PriorityTagObserver;
 import org.burrow_studios.bruno.listener.RefreshListener;
@@ -76,7 +75,6 @@ public class Bruno {
                 .disableCache(CacheFlag.ONLINE_STATUS)
                 .disableCache(CacheFlag.SCHEDULED_EVENTS)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
-                .addEventListeners(new DashboardCleaner(this))
                 .addEventListeners(new DashboardUpdater(this))
                 .addEventListeners(new PriorityTagObserver(this))
                 .addEventListeners(new RefreshListener(this))

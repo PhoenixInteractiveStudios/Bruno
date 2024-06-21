@@ -9,8 +9,7 @@ import java.util.Properties;
 
 public record Config(
         String token,
-        long forumChannel,
-        long boardChannel
+        long forumChannel
 ) {
     public static @NotNull Config fromFile(@NotNull File file) throws IOException {
         Properties properties = new Properties();
@@ -34,16 +33,6 @@ public record Config(
             throw new IllegalArgumentException("channel.forum must be a valid id", e);
         }
 
-        String boardChannelStr = properties.getProperty("channel.board");
-        if (boardChannelStr == null)
-            throw new IllegalArgumentException("channel.board may not be null");
-        long boardChannel;
-        try {
-            boardChannel = Long.parseLong(boardChannelStr);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("channel.board must be a valid id", e);
-        }
-
-        return new Config(token, forumChannel, boardChannel);
+        return new Config(token, forumChannel);
     }
 }

@@ -10,13 +10,19 @@ import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.burrow_studios.bruno.Bruno;
 import org.burrow_studios.bruno.Priority;
 import org.burrow_studios.bruno.emoji.EmojiProvider;
+import org.burrow_studios.bruno.listener.RefreshListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DashboardService {
     private final Bruno bruno;
@@ -67,34 +73,44 @@ public class DashboardService {
     }
 
     public void update(@NotNull DashboardReport report) {
-        TextChannel channel = this.getChannel();
+        String boardTitle = this.bruno.getTextProvider().get("board.title");
 
-        MessageHistory history = channel.getHistoryFromBeginning(2).complete();
+        ForumChannel  forum = this.bruno.getForum();
+        ThreadChannel board = this.getThread();
 
-        if (history.size() > 1)
-            throw new IllegalArgumentException("Board channel is not empty");
+        Button refreshButton = Button.of(ButtonStyle.SECONDARY, RefreshListener.REFRESH_BUTTON_ID, this.bruno.getTextProvider().get("board.refresh"));
 
-        if (history.size() == 1) {
-            Message existingMessage = history.getRetrievedHistory().get(0);
+        if (board == null) {
+            // board post does not exist yet; create one
+            board = forum.createForumPost(boardTitle, MessageCreateData.fromContent(report.getContent()))
+                    .setActionRow(refreshButton)
+                    .complete().getThreadChannel();
+        } else {
+            // board post exists; update it
 
-            if (!existingMessage.getAuthor().equals(this.bruno.getJDA().getSelfUser()))
-                throw new IllegalArgumentException("Board channel contains foreign message");
+            Message message = board.retrieveStartMessage().complete();
 
-            report.applyEdit(existingMessage.editMessage("")).queue();
-            return;
+            message.editMessage(report.getContent())
+                    .setActionRow(refreshButton)
+                    .queue();
         }
 
-        report.applyCreate(channel.sendMessage("")).queue();
+        board.getManager().setPinned(true).queue();
     }
 
-    public @NotNull TextChannel getChannel() {
-        long channelId = this.bruno.getConfig().boardChannel();
+    public @Nullable ThreadChannel getThread() {
+        String boardTitle = this.bruno.getTextProvider().get("board.title");
 
-        TextChannel channel = this.bruno.getJDA().getTextChannelById(channelId);
+        ForumChannel  forum = this.bruno.getForum();
+        ThreadChannel board = null;
 
-        if (channel == null)
-            throw new NullPointerException("Board channel does not exist or is not reachable");
+        for (ThreadChannel thread : forum.getThreadChannels()) {
+            if (thread.getOwnerIdLong() != forum.getJDA().getSelfUser().getIdLong()) continue;
+            if (!thread.getName().equals(boardTitle)) continue;
 
-        return channel;
+            board = thread;
+        }
+
+        return board;
     }
 }
