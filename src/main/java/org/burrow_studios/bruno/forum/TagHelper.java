@@ -69,6 +69,9 @@ class TagHelper {
         if (priority == null)
             priority = Priority.MID;
 
+        if (thread.equals(this.forumManager.getBruno().getDashboardService().getThread()))
+            priority = null;
+
         if (!thread.isArchived()) {
             /*
              * If the required priority tag does not exist the bot will ignore priority. All tags SHOULD exist at this point
@@ -77,7 +80,7 @@ class TagHelper {
             for (ForumTag availableTag : this.forumManager.getBruno().getForum().getAvailableTags()) {
                 Priority p = this.forumManager.getBruno().getPriority(availableTag);
 
-                if (priority == p)
+                if (priority != null && priority == p)
                     tags.add(availableTag);
             }
         }
