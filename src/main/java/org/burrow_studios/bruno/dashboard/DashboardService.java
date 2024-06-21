@@ -38,7 +38,12 @@ public class DashboardService {
 
         DashboardReport report = new DashboardReport(this.bruno);
 
+        ThreadChannel board = this.getThread();
+
         for (ThreadChannel post : forum.getThreadChannels()) {
+            // exclude board channel from board
+            if (post.equals(board)) continue;
+
             Priority priority = Priority.MID;
 
             for (ForumTag tag : post.getAppliedTags()) {
